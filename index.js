@@ -37,35 +37,48 @@ function laodParagraph(){
     })
 }
 //handle user input
-function initTyping(){
-    const char=typingText.querySelectorAll('span');
-    const typedChar=input.value.charAt(charIndex);
+function initTyping() {
+    const chars = typingText.querySelectorAll('span'); 
+    const typedChar = input.value.split('')[charIndex]; 
 
+    if (charIndex < chars.length && timeLeft > 0) {
+        if (!isTyping) {
 
-    if(charIndex < char.length && timeLeft > 0){
+            timer = setInterval(initTime, 1000);
+            isTyping = true;
+        }
 
-        if(!isTyping){
-            timer =setInterval(initTime,1000);
-                isTyping=true;
+        if (typedChar == null) {
+            if (charIndex > 0) {
+                charIndex--; 
+                chars[charIndex].classList.remove('correct', 'incorrect', 'active');
+                chars[charIndex].classList.add('active'); 
+            }
+        } else {
+            
+            if (typedChar === chars[charIndex].innerText) {
+                chars[charIndex].classList.add('correct'); 
+            } else {
+                mistake++; 
+                chars[charIndex].classList.add('incorrect'); 
+            }
+
+            
+            charIndex++;
+            if (charIndex < chars.length) {
+                chars.forEach(span => span.classList.remove('active')); 
+                chars[charIndex].classList.add('active'); 
+            }
+            mistakes.innerText = mistake;
+            cpm.innerText = charIndex - mistake; 
         }
-        if(char[charIndex].innerText===typedChar){
-            char[charIndex].classList.add('correct');
-        }
-        else{
-            mistake++;
-            char[charIndex].classList.add('incorrect');
-        }
-        charIndex++;
-        char[charIndex].classList.add('active');
-        mistakes.innerText=mistake;
-        cpm.innerText=charIndex-mistake;
-    }
-    else{
+
+    } else {
         clearInterval(timer);
-        input.value="";
-
+        input.value = ''; 
     }
 }
+
 function initTime(){
     if(timeLeft>0){
         timeLeft--;
